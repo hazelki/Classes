@@ -9,21 +9,19 @@ class AbstractMelonOrder(object):
         self.qty = qty
         self.shipped = False
 
+
     def get_total(self):
         """Calculate price."""
 
+        base_price = 5
+
         if self.species == "Christmas melons":
-            base_price = 5 * 1.5
-            total = (1 + self.tax) * self.qty * base_price
-            
-        elif self.qty < 10:
-            base_price = 5 + 3
-            total = (1 + self.tax) * self.qty * base_price
-           
-        else:
-            base_price = 5
-            total = (1 + self.tax) * self.qty * base_price
+            base_price *= 1.5
+
+        total = (1 + self.tax) * self.qty * base_price
+
         return total
+
 
     def mark_shipped(self):
         """Set shipped to true."""
@@ -58,11 +56,37 @@ class InternationalMelonOrder(AbstractMelonOrder):
 
         return self.country_code
 
+    def get_total(self):
+
+        total = super(InternationalMelonOrder, self).get_total()
+
+        if self.qty < 10:
+            total += 3
+
+        return total
+
+
+class WisconsinMelonOrder(DomesticMelonOrder):
+
+    # in wisconsin, we only sell 5 watermelons
+    def __init__(self, qty):
+        """Set domestic tax to 0.08"""
+
+        self.order_type = "domestic"
+        self.tax = 0.08
+        super(WisconsinMelonOrder, self).__init__("watermelon", 5)
+
+
+
+
     # def mark_shipped(self):
 
         # super(InternationalMelonOrder, self).mark_shipped()
 
         # print 'international order shipped!'
+
+
+
 
 
 
